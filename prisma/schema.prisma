@@ -15,14 +15,15 @@ datasource db {
 }
 
 model User {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  email     String @unique
-  name      String
-  nickname  String
-  password  String
-  characters Character[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  email       String @unique
+  name        String
+  nickname    String
+  password    String
+  characters  Character[]
+  role        String // admin, game_master, player
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Character {
@@ -32,16 +33,39 @@ model Character {
   user        User @relation(fields: [userId], references: [id])
   userId      String @db.ObjectId
   properties  Property[]
+  features    Feature[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model Property {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
-  type        String 
+  type        String // strong, fast, smart, fabulous, joy, coins, treats
   value       Int  
+  maxValue    Int?
   character   Character @relation(fields: [characterId], references: [id])
   characterId String @db.ObjectId 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Feature {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  character   Character? @relation(fields: [characterId], references: [id])
+  characterId String? @db.ObjectId
+  companion   Companion? @relation(fields: [companionId], references: [id])
+  companionId String? @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Companion {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  features    Feature[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
